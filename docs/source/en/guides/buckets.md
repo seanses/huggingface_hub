@@ -24,7 +24,7 @@ Create a bucket with [`create_bucket`]. You need to provide a bucket name. If yo
 >>> url = create_bucket("my-bucket")
 >>> url.bucket_id
 'username/my-bucket'
->>> url.handle
+>>> url.uri.to_uri()
 'hf://buckets/username/my-bucket'
 
 # Create a private bucket
@@ -34,19 +34,28 @@ BucketUrl(...)
 # Don't error if bucket already exists
 >>> create_bucket("my-bucket", exist_ok=True)
 BucketUrl(...)
+
+# Create a bucket in a specific region
+>>> create_bucket("my-bucket", region="us")
+BucketUrl(...)
 ```
 
 Or via CLI:
 
 ```bash
 >>> hf buckets create my-bucket
-Bucket created: https://huggingface.co/buckets/username/my-bucket (handle: hf://buckets/username/my-bucket)
+✓ Bucket created
+  uri: hf://buckets/Wauplin/my-bucket
+  url: https://huggingface.co/buckets/Wauplin/my-bucket
 
 # Create a private bucket
 >>> hf buckets create my-bucket --private
 
 # Don't error if bucket already exists
 >>> hf buckets create my-bucket --exist-ok
+
+# Create a bucket in a specific region
+>>> hf buckets create my-bucket --region us
 ```
 
 You can also specify the full `namespace/bucket_name` format to create a bucket under an organization:
@@ -540,6 +549,7 @@ Notes:
 - Bucket-to-repo copy is not yet supported.
 - Files tracked with Xet (in buckets or repos) are copied server-side by hash — no data is downloaded or re-uploaded.
 - Small text files not tracked with Xet on repo sources are downloaded and re-uploaded to the destination bucket.
+- [`copy_files`] can also be used for repo-to-repo copies
 
 ## Sync directories
 
